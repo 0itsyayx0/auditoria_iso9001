@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Historial de Auditorías</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+    .cumple {
+      color: green;
+    }
+    .nocumple {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Historial de Auditorías</h1>
+  <table>
+    <tr>
+      <th>Fecha</th>
+      <th>Ítem</th>
+      <th>Resultado</th>
+    </tr>
+    {% for fila in datos %}
+    <tr>
+      <td>{{ fila[0] }}</td>
+      <td>{{ fila[1] }}</td>
+      <td class="{{ 'cumple' if fila[2] else 'nocumple' }}">{{ '✔️ Cumple' if fila[2] else '❌ No cumple' }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

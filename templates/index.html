@@ -1,0 +1,111 @@
+7<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Auditoría ISO 9001</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f3;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .button:hover {
+      background-color: #2980b9;
+    }
+    .item {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .result {
+      font-weight: bold;
+    }
+    .cumple {
+      color: green;
+    }
+    .nocumple {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Auditoría de Calidad ISO 9001:2015</h1>
+
+  <button class="button" onclick="mostrarCuestionario()">📋 Cuestionario</button>
+  <button class="button" onclick="window.open('https://drive.google.com/tu-enlace', '_blank')">📁 Documentación ISO</button>
+  <button class="button" onclick="window.location.href='/historial'">📊 Ver Historial</button>
+
+  <div id="cuestionario" style="display:none;">
+    <h2>¿Cumple con los siguientes ítems?</h2>
+    <form id="formulario">
+      {% for item in items %}
+      <div class="item">
+        <label>
+          <input type="checkbox" name="{{ item }}" />
+          {{ item }}
+        </label>
+      </div>
+      {% endfor %}
+      <button type="button" class="button" onclick="enviarDatos()">✅ Evaluar</button>
+    </form>
+  </div>
+
+  <div id="resultados" style="display:none;">
+    <h2>Resultados de Auditoría</h2>
+    <div id="listaResultados"></div>
+  </div>
+
+  <script>
+    function mostrarCuestionario() {
+      document.getElementById('cuestionario').style.display = 'block';
+    }
+
+    function enviarDatos() {
+      const form = document.getElementById('formulario');
+      const inputs = form.querySelectorAll('input[type="checkbox"]');
+      const datos = {};
+
+      inputs.forEach(input => {
+        datos[input.name] = input.checked;
+      });
+
+      fetch('/evaluar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(datos)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const resultados = document.getElementById('listaResultados');
+        resultados.innerHTML = '';
+        data.forEach(res => {
+          const div = document.createElement('div');
+          div.className = 'result ' + (res.cumple ? 'cumple' : 'nocumple');
+          div.textContent = `${res.item}: ${res.cumple ? '✔️ Cumple' : '❌ No cumple'}`;
+          resultados.appendChild(div);
+        });
+        document.getElementById('resultados').style.display = 'block';
+      });
+    }
+  </script>
+
+</body>
+</html>
